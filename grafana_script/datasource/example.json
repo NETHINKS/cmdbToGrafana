@@ -1,0 +1,82 @@
+[
+  {
+    "id": "10000",
+    "password": "",
+    "object": [
+    {
+      "parameter": 
+      {
+        "location": "Network-Connection: STREET 3, 12345 CITY || IP:127.0.0.1",
+        "nodeid": "yourcmdb-kdrouter:111", 
+        "interface": "Et0"
+      }
+    }
+    ]
+  },
+  {
+    "id": "10001",
+    "password": "", 
+    "object": [
+      {
+      "parameter": 
+      {
+        "location": "Network-Connection: STREET 3, 12345 CITY || IP:127.0.0.1", 
+        "nodeid": "yourcmdb-kdrouter:222", 
+        "interface": "Fa3"
+      }
+    }, 
+    { 
+      "parameter": 
+      {
+        "location": "Network-Connection: STREET 3, 12345 CITY || IP:127.0.0.1", 
+        "nodeid": "yourcmdb-kdrouter:333", 
+        "interface": "Gi0/0/0"
+      }
+    }
+    ]
+  }, 
+  {
+    "id": "10002", 
+    "password": "", 
+    "object": [
+      { 
+        "parameter": 
+        {
+          "location": "Network-Connection: STREET 3, 12345 CITY || IP:127.0.0.1", 
+          "nodeid": "yourcmdb-kdrouter:444", 
+          "interface": "Gi0/0"
+        }
+      }
+    ]
+  }, 
+  {
+    "id": "10003", 
+    "password": "", 
+    "object": [
+      {
+        "parameter": 
+        {
+          "location": "Network-Connection: STREET 3, 12345 CITY || IP:127.0.0.1", 
+          "nodeid": "yourcmdb-kdrouter:555", 
+          "interface": "Fa1"
+        }
+      }, 
+      {
+        "parameter": 
+        {
+          "location": "Network-Connection: STREET 3, 12345 CITY || IP:127.0.0.1", 
+          "nodeid": "yourcmdb-kdrouter:666", 
+          "interface": "Et0"
+        }
+      }, 
+      {
+        "parameter": 
+        {
+          "location": "Network-Connection: STREET 3, 12345 CITY || IP:127.0.0.1", 
+          "nodeid": "yourcmdb-kdrouter:777", 
+          "interface": "Et0"
+        }
+      }
+    ]
+  }
+]

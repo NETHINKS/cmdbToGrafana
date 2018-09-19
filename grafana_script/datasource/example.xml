@@ -1,0 +1,45 @@
+<dashboard-hardware>
+	<user_id id="10000" password="">
+		<object>
+				<parameter key="location" value="Network-Connection: STREET 3, 12345 CITY  || IP: 127.0.0.1" />
+				<parameter key="nodeid" value="yourcmdb-kdrouter:111" />
+				<parameter key="interface" value="Et0" />
+		</object>
+	</user_id>
+	<user_id id="10001" password="">
+		<object>
+				<parameter key="location" value="Network-Connection: STREET 3, 12345 CITY || IP: 127.0.0.1" />
+				<parameter key="nodeid" value="yourcmdb-kdrouter:222" />
+				<parameter key="interface" value="Fa3" />
+		</object>
+		<object>
+				<parameter key="location" value="Network-Connection: STREET 3, 12345 CITY || IP: 127.0.0.1" />
+				<parameter key="nodeid" value="yourcmdb-kdrouter:333" />
+				<parameter key="interface" value="Gi0/0/0" />
+		</object>
+	</user_id>
+	<user_id id="10002" password="">
+		<object>
+				<parameter key="location" value="Network-Connection: STREET 3, 12345 CITY || IP: 127.0.0.1" />
+				<parameter key="nodeid" value="yourcmdb-kdrouter:444" />
+				<parameter key="interface" value="Gi0/0" />
+		</object>
+	</user_id>
+	<user_id id="10003" password="">
+		<object>
+				<parameter key="location" value="Network-Connection: STREET 3, 12345 CITY || IP: 127.0.0.1" />
+				<parameter key="nodeid" value="yourcmdb-kdrouter:555" />
+				<parameter key="interface" value="Fa1" />
+		</object>
+		<object>
+				<parameter key="location" value="Network-Connection: STREET 3, 12345 CITY || IP: 127.0.0.1" />
+				<parameter key="nodeid" value="yourcmdb-kdrouter:666" />
+				<parameter key="interface" value="Et0" />
+		</object>
+		<object>
+				<parameter key="location" value="Network-Connection: STREET 3, 12345 CITY || IP: 127.0.0.1" />
+				<parameter key="nodeid" value="yourcmdb-kdrouter:777" />
+				<parameter key="interface" value="Et0.7" />
+		</object>
+	</user_id>
+</dashboard-hardware>

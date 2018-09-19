@@ -1,0 +1,127 @@
+{
+  "aliasColors": {},
+  "bars": false,
+  "dashLength": 10,
+  "dashes": false,
+  "datasource": "",
+  "fill": 1,
+  "gridPos": {
+    "h": 9,
+    "w": 24,
+    "x": 0,
+    "y": "" 
+  },
+  "id": "",
+  "legend": {
+    "alignAsTable": true,
+    "avg": true,
+    "current": false,
+    "hideEmpty": false,
+    "hideZero": false,
+    "max": true,
+    "min": true,
+    "rightSide": false,
+    "show": true,
+    "sideWidth": 300,
+    "total": false,
+    "values": true
+  },
+  "lines": true,
+  "linewidth": 2,
+  "links": [],
+  "nullPointMode": "null",
+  "percentage": false,
+  "pointradius": 5,
+  "points": false,
+  "renderer": "flot",
+  "seriesOverrides": [
+    {
+      "alias": "mbits/Out",
+      "transform": "negative-Y"
+    },
+    {
+      "alias": "mbits/Out",
+      "color": "#badff4"
+    },
+    {
+      "alias": "mbits/IN",
+      "color": "#5195ce"
+    }
+  ],
+  "spaceLength": 10,
+  "stack": false,
+  "steppedLine": false,
+  "targets": [
+    {
+      "attribute": "ifHCInOctets",
+      "hide": true,
+      "label": "ifHCInOctets",
+      "nodeId": "",
+      "refId": "A",
+      "resourceId": "",
+      "type": "attribute"
+    },
+    {
+      "attribute": "ifHCOutOctets",
+      "hide": true,
+      "label": "ifHCOutOctets",
+      "nodeId": "",
+      "refId": "B",
+      "resourceId": "",
+      "type": "attribute"
+    },
+    {
+      "expression": "ifHCInOctets*8/(1024*1024)",
+      "hide": false,
+      "label": "mbits/IN",
+      "refId": "C",
+      "type": "expression"
+    },
+    {
+      "expression": "ifHCOutOctets*8/(1024*1024)",
+      "hide": false,
+      "label": "mbits/Out",
+      "refId": "D",
+      "type": "expression"
+    }
+  ],
+  "thresholds": [],
+  "timeFrom": null,
+  "timeShift": null,
+  "title": "",
+  "tooltip": {
+    "shared": true,
+    "sort": 0,
+    "value_type": "individual"
+  },
+  "type": "graph",
+  "xaxis": {
+    "buckets": null,
+    "mode": "time",
+    "name": null,
+    "show": true,
+    "values": []
+  },
+  "yaxes": [
+    {
+      "format": "Mbits",
+      "label": null,
+      "logBase": 1,
+      "max": null,
+      "min": null,
+      "show": true
+    },
+    {
+      "format": "Mbits",
+      "label": null,
+      "logBase": 1,
+      "max": null,
+      "min": null,
+      "show": true
+    }
+  ],
+  "yaxis": {
+    "align": false,
+    "alignLevel": null
+  }
+}
