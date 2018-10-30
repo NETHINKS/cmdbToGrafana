@@ -25,6 +25,10 @@ class GrafanaFunctions:
         self.g_password = CONF.get_value('Grafana', 'password')
         self.g_url = CONF.get_value('Grafana', 'url')
         self.g_protocol = CONF.get_value('Grafana', 'protocol')
+        if self.g_protocol == 'https':
+            self.port = 443
+        else:
+            self.port = 80
 
     def create_users(self, all_info):
         """
@@ -33,8 +37,8 @@ class GrafanaFunctions:
 
         for user_id in all_info:
             password = user_id['password']
-            grafana_link = "%s://%s:%s@%s:3000/api/admin/users"
-            grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url)
+            grafana_link = "%s://%s:%s@%s:%s/api/admin/users"
+            grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url, self.port)
             headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
             data = {
                 "name": "%s" % user_id['id'],
@@ -42,7 +46,7 @@ class GrafanaFunctions:
                 "password": "%s" % password,
                 "role": "Viewer"
             }
-            requests.post(grafana_access, data=json.dumps(data), headers=headers)
+            requests.post(grafana_access, data=json.dumps(data), headers=headers, verify=False)
 
     def get_users(self):
         """
@@ -51,11 +55,11 @@ class GrafanaFunctions:
         with the dashboard id from getDashboards to give the dashboard user
         specified access
         """
-
-        grafana_link = "%s://%s:%s@%s:3000/api/users"
-        grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url)
+        # https://admin:(Fg<Se{N7K<sADBt@grafana.nethinks.com:443/api/users
+        grafana_link = "%s://%s:%s@%s:%s/api/users"
+        grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url, self.port)
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-        request_data = requests.get(grafana_access, headers=headers)
+        request_data = requests.get(grafana_access, headers=headers, verify=False)
         json_data = json.loads(request_data.text)
         users = {}
         for entry in json_data:
@@ -73,10 +77,10 @@ class GrafanaFunctions:
         getUsers
         """
 
-        grafana_link = "%s://%s:%s@%s:3000/api/search?tag=user_dashboard"
-        grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url)
+        grafana_link = "%s://%s:%s@%s:%s/api/search?tag=user_dashboard"
+        grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url, self.port)
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-        request_data = requests.get(grafana_access, headers=headers)
+        request_data = requests.get(grafana_access, headers=headers, verify=False)
         json_data = json.loads(request_data.text)
         dashboards = {}
         for entry in json_data:
@@ -91,9 +95,9 @@ class GrafanaFunctions:
         for dashboard_id, dashboard_title in dashboards.items():
             for grafana_id, user_id in users.items():
                 if user_id in dashboard_title:
-                    grafana_link = "%s://%s:%s@%s:3000/api/dashboards/id/%s/permissions"
+                    grafana_link = "%s://%s:%s@%s:%s/api/dashboards/id/%s/permissions"
                     grafana_access = grafana_link % (
-                    self.g_protocol, self.g_user, self.g_password, self.g_url, dashboard_id)
+                    self.g_protocol, self.g_user, self.g_password, self.g_url, self.port, dashboard_id)
                     headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
                     data = {
                         "items": [
@@ -103,7 +107,7 @@ class GrafanaFunctions:
                             }
                         ]
                     }
-                    requests.post(grafana_access, data=json.dumps(data), headers=headers)
+                    requests.post(grafana_access, data=json.dumps(data), headers=headers, verify=False)
 
     def delete_users(self):
         """
@@ -111,18 +115,18 @@ class GrafanaFunctions:
         In case the users changed their names or passwords in Grafana
         Get all user id's and then delete the users
         """
-        grafana_link = "%s://%s:%s@%s:3000/api/users"
-        grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url)
+        grafana_link = "%s://%s:%s@%s:%s/api/users"
+        grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url, self.port)
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-        request_data = requests.get(grafana_access, headers=headers)
+        request_data = requests.get(grafana_access, headers=headers, verify=False)
         json_data = json.loads(request_data.text)
         for entry in json_data:
             if entry['name'] != '':  # Admin User = ''
                 user_id = entry['id']
-                grafana_link = "%s://%s:%s@%s:3000/api/admin/users/%s"
-                grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url, user_id)
+                grafana_link = "%s://%s:%s@%s:%s/api/admin/users/%s"
+                grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url, self.port, user_id)
                 headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-                requests.delete(grafana_access, headers=headers)
+                requests.delete(grafana_access, headers=headers, verify=False)
 
     def delete_dashboards(self):
         """
@@ -132,14 +136,14 @@ class GrafanaFunctions:
         Get all dashboard uid's and then delete the dashboards
         """
 
-        grafana_link = "%s://%s:%s@%s:3000/api/search?tag=user_dashboard"
-        grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url)
+        grafana_link = "%s://%s:%s@%s:%s/api/search?tag=user_dashboard"
+        grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url, self.port)
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-        request_data = requests.get(grafana_access, headers=headers)
+        request_data = requests.get(grafana_access, headers=headers, verify=False)
         json_data = json.loads(request_data.text)
         for entry in json_data:
             uid = entry['uid']
-            grafana_link = "%s://%s:%s@%s:3000/api/dashboards/uid/%s"
-            grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url, uid)
+            grafana_link = "%s://%s:%s@%s:%s/api/dashboards/uid/%s"
+            grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url, self.port, uid)
             headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-            requests.delete(grafana_access, headers=headers)
+            requests.delete(grafana_access, headers=headers, verify=False)

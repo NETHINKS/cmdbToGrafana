@@ -21,51 +21,54 @@ def cmdb_to_dict(objects_by_user):
     """
     Summs up all necessary information in one dictionary
     """
+
     object_name = CONF.get_value('CMDB', 'object_name')
     foreign_to_id = ONMS.associate_to_id()
     asset_to_user = CMDB.asset_id_to_user_id()
 
     all_info = []
-    for user_id in objects_by_user:
+    for user_id in asset_to_user:
+        
         password = CMDB.get_password(asset_to_user[user_id])
         object_lst = []
-
-        # Create a new dictionary-template for further use
-        main_data = {
-            "id": "%s" % user_id,
-            "password": "%s" % password,
-            "object": ""
-        }
-
-        for object_id in objects_by_user[user_id]:
-
-            # Add Description of Object Location to dictionary
-            location = CMDB.get_location(object_id)
-
-            # Add WAN-Interface to disctionary
-            interface = CMDB.get_interfaces(object_id)
-
-            # Add Database Description to dictionary
-            nodeid = "%s%s" % (object_name, object_id)
-            interface = ONMS.corrected_interface(foreign_to_id, object_id, interface)
-            object_data = {
-                "parameter": {
-                    "location": "%s" % location,
-                    "nodeid": "%s" % nodeid,
-                    "interface": "%s" % interface
-                }
+        
+        if password:
+            # Create a new dictionary-template for further use
+            main_data = {
+                "id": "%s" % user_id,
+                "password": "%s" % password,
+                "object": ""
             }
-            # Only add object with Interfaces
-            if interface is not None:
-                object_lst.append(object_data)
 
-        """
-        Creates the final Dicionary in the format of 
-        {'UserID','Password', Objects:{{'Object location information'}}, 
-        'UserID','Password', Objects:{{'Object location information'}}}
-        """
-        main_data.update({'object': object_lst})
-        all_info.append(main_data)
+            for object_id in objects_by_user[user_id]:
+        
+                # Add Description of Object Location to dictionary
+                location = CMDB.get_location(object_id)
+
+                # Add WAN-Interface to disctionary
+                interface = CMDB.get_interfaces(object_id)
+
+                nodeid = "%s%s" % (object_name, object_id)
+                interface = ONMS.corrected_interface(foreign_to_id, object_id, interface)
+                object_data = {
+                    "parameter": {
+                        "location": "%s" % location,
+                        "nodeid": "%s" % nodeid,
+                        "interface": "%s" % interface
+                    }
+                }
+
+                # Only add object with Interfaces
+                if interface is not None:
+                    object_lst.append(object_data)
+
+                """
+                Creates the final Dicionary in the format of 
+                {'UserID','Password', Objects:{{'Object location information'}}, 
+                'UserID','Password', Objects:{{'Object location information'}}}
+                """
+                main_data.update({'object': object_lst})
+                all_info.append(main_data)   
     return all_info
 
 

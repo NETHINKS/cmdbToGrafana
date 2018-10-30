@@ -55,9 +55,14 @@ def create_dashboard(all_info):
             paneldata.append(panel)
             panel_id += 1
             grid_pos_y += 9
-        grafana_access = "%s://%s:%s@%s:3000/api/dashboards/db" % (g_protocol, g_user, g_password, g_url)
+        if g_protocol == 'https':
+            port = 443
+        else:
+            port = 80
+
+        grafana_access = "%s://%s:%s@%s:%s/api/dashboards/db" % (g_protocol, g_user, g_password, g_url, port)
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 
         dashboard['dashboard']['panels'] = paneldata
         dashboard['dashboard']['title'] = "Network Workload - %s" % user_id
-        requests.post(grafana_access, data=json.dumps(dashboard), headers=headers)
+        requests.post(grafana_access, data=json.dumps(dashboard), headers=headers, verify=False)

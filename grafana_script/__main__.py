@@ -7,10 +7,13 @@ This is the main module of Grafana-Script
 
 from __future__ import print_function
 import sys
+import urllib3
 from grafana_script.cmdb import CmdbDatacollection
 from grafana_script.information_converter import cmdb_to_dict, json_to_dict, xml_to_dict
 from grafana_script.grafana_dashboard import create_dashboard
 from grafana_script.grafana_functions import GrafanaFunctions
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 CMDB = CmdbDatacollection()
 GF = GrafanaFunctions()
@@ -56,7 +59,6 @@ def main():
     print('------------------------------------------------')
     print('* All Done !!!')
     print('')
-
 
 if __name__ == "__main__":
     main()

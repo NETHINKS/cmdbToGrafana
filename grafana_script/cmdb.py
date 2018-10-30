@@ -36,6 +36,7 @@ class CmdbDatacollection:
 
         objects_url = self.c_address + CONF.get_value('CMDB', 'login_url_part')
         access_object = '%s://%s:%s@%s' % (self.c_protocol, self.c_user, self.c_password, objects_url)
+
         cmdb_data = requests.get(access_object)
         json_cmdb_data = json.loads(cmdb_data.text)
         asset_to_user = {}
@@ -44,7 +45,7 @@ class CmdbDatacollection:
             access = '%s://%s:%s@%s' % (self.c_protocol, self.c_user, self.c_password, objects_url)
             object_data = requests.get(access)
             json_object_data = json.loads(object_data.text)
-            user_id = json_object_data['objectFields']['Grafana-Zugangsdaten'][0]['value']
+            user_id = json_object_data['objectFields']['Kunden-Details'][1]['value']
             asset_to_user.update({user_id: asset_id})
         return asset_to_user
 
@@ -110,6 +111,7 @@ class CmdbDatacollection:
         if event_data:
             send_event(event_data)
         return objects_by_user
+        
 
     def get_interfaces(self, object_id):
         """
@@ -127,12 +129,11 @@ class CmdbDatacollection:
         """
         Get the User Password from the cmdb
         """
-
         objects_url = '%s/rest.php/objects/%s' % (self.c_address, asset_id)
         access = '%s://%s:%s@%s' % (self.c_protocol, self.c_user, self.c_password, objects_url)
         object_data = requests.get(access)
         json_object_data = json.loads(object_data.text)
-        password = json_object_data['objectFields']['Grafana-Zugangsdaten'][1]['value']
+        password = json_object_data['objectFields']['Kunden-Details'][2]['value']
         return password
 
     def get_location(self, object_id):

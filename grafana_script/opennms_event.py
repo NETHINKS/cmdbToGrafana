@@ -18,4 +18,4 @@ def send_event(event_data):
 
     event_message = 'The following Datasource Objects got wrong User IDs: %s' % event_data
     path = CONF.get_value('OpenNMS', 'path_to_send_event')
-    os.system('%ssend-event.pl uei.opennms.org/default/event localhost -d "%s" -x 4' % (path, event_message))
+    os.system('%ssend-event.pl uei.opennms.org/cmdb/cutomer_ids localhost -d "%s" -x 4' % (path, event_message))
