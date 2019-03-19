@@ -57,8 +57,10 @@ def create_dashboard(all_info):
             grid_pos_y += 9
         if g_protocol == 'https':
             port = 443
-        else:
+        elif g_protocol == 'http':
             port = 80
+        else:
+            port = 3000
 
         grafana_access = "%s://%s:%s@%s:%s/api/dashboards/db" % (g_protocol, g_user, g_password, g_url, port)
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}

@@ -64,7 +64,10 @@ class OpennmsFunctions:
             for data_entry in all_interfaces:
                 interfaces = data_entry.find('ifName').text
                 if interfaces == interface:
-                    phys_addr = data_entry.find('physAddr').text
-                    interface = interface.replace('/', '_').replace('.', '_')
-                    resourceid = 'interfaceSnmp' + '[' + '%s' % interface + '-' + phys_addr + ']'
+                    try:
+                        phys_addr = data_entry.find('physAddr').text
+                        interface = interface.replace('/', '_').replace('.', '_')
+                        resourceid = 'interfaceSnmp' + '[' + '%s' % interface + '-' + phys_addr + ']'
+                    except AttributeError:
+                        resourceid = 'interfaceSnmp' + '[' + '%s' % interface + ']'
         return resourceid

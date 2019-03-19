@@ -27,8 +27,10 @@ class GrafanaFunctions:
         self.g_protocol = CONF.get_value('Grafana', 'protocol')
         if self.g_protocol == 'https':
             self.port = 443
-        else:
+        elif self.g_protocol == 'http':
             self.port = 80
+        else:
+            self.port = 3000
 
     def create_users(self, all_info):
         """
