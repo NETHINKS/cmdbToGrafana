@@ -7,6 +7,7 @@ This is the functions module of Grafana-Script
 
 import xml.etree.ElementTree as ET
 import requests
+import json
 from grafana_script.config import ScriptConfig
 
 CONF = ScriptConfig()
@@ -71,3 +72,15 @@ class OpennmsFunctions:
                     except AttributeError:
                         resourceid = 'interfaceSnmp' + '[' + '%s' % interface + ']'
         return resourceid
+
+    def hc_octets_check(self, foreign_to_id, object_id, interface):
+        opennms_node_id = foreign_to_id[object_id]
+        opennms_address = self.o_url + '/opennms/rest/measurements/node[%s].%s/ifHCInOctets?&aggregation=AVERAGE'%(opennms_node_id, interface)
+        access = '%s://%s:%s@%s' % (self.o_protocol, self.o_user, self.o_password, opennms_address)
+        response = requests.get(access)
+        hc_octets_available = ''
+        if response.status_code == 200:
+            hc_octets_available = 'true'
+        else:
+            hc_octets_available = 'false'
+        return hc_octets_available

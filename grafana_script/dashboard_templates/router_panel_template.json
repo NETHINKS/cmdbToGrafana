@@ -4,7 +4,7 @@
   "dashLength": 10,
   "dashes": false,
   "datasource": "",
-  "fill": 1,
+  "fill": 2,
   "gridPos": {
     "h": 9,
     "w": 24,
@@ -36,16 +36,16 @@
   "renderer": "flot",
   "seriesOverrides": [
     {
-      "alias": "mbits/Out",
+      "alias": "mbits/OUT",
       "transform": "negative-Y"
     },
     {
-      "alias": "mbits/Out",
-      "color": "#badff4"
+      "alias": "mbits/OUT",
+      "color": "#3465a4"
     },
     {
       "alias": "mbits/IN",
-      "color": "#5195ce"
+      "color": "#4e9a06"
     }
   ],
   "spaceLength": 10,
@@ -53,34 +53,34 @@
   "steppedLine": false,
   "targets": [
     {
-      "attribute": "ifHCInOctets",
+      "attribute": "",
       "hide": true,
-      "label": "ifHCInOctets",
+      "label": "",
       "nodeId": "",
       "refId": "A",
       "resourceId": "",
       "type": "attribute"
     },
     {
-      "attribute": "ifHCOutOctets",
+      "attribute": "",
       "hide": true,
-      "label": "ifHCOutOctets",
+      "label": "",
       "nodeId": "",
       "refId": "B",
       "resourceId": "",
       "type": "attribute"
     },
     {
-      "expression": "ifHCInOctets*8/(1024*1024)",
+      "expression": "",
       "hide": false,
       "label": "mbits/IN",
       "refId": "C",
       "type": "expression"
     },
     {
-      "expression": "ifHCOutOctets*8/(1024*1024)",
+      "expression": "",
       "hide": false,
-      "label": "mbits/Out",
+      "label": "mbits/OUT",
       "refId": "D",
       "type": "expression"
     }

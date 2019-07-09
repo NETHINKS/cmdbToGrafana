@@ -82,8 +82,12 @@ class CmdbDatacollection:
             # Check if object is active in monitoring
             elif json_object_data['objectFields']['Management'][2]['value'] == 'false':
                 pass
+            elif json_object_data['objectFields']['Management'][2]['value'] == '':
+                pass
             # Check if object is active in portal
             elif json_object_data['objectFields']['Kundenportal'][0]['value'] == 'false':
+                pass
+            elif json_object_data['objectFields']['Kundenportal'][0]['value'] == '':
                 pass
             else:
                 user_id = json_object_data['objectFields']['Kunde'][0]['value']

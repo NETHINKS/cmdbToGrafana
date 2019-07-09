@@ -41,7 +41,7 @@ def cmdb_to_dict(objects_by_user):
             }
 
             for object_id in objects_by_user[user_id]:
-        
+               
                 # Add Description of Object Location to dictionary
                 location = CMDB.get_location(object_id)
 
@@ -50,11 +50,15 @@ def cmdb_to_dict(objects_by_user):
 
                 nodeid = "%s%s" % (object_name, object_id)
                 interface = ONMS.corrected_interface(foreign_to_id, object_id, interface)
+                
+                hc_check = ONMS.hc_octets_check(foreign_to_id, object_id, interface)
+
                 object_data = {
                     "parameter": {
                         "location": "%s" % location,
                         "nodeid": "%s" % nodeid,
-                        "interface": "%s" % interface
+                        "interface": "%s" % interface,
+                        "hc_octets": "%s" % hc_check
                     }
                 }
 
@@ -68,7 +72,7 @@ def cmdb_to_dict(objects_by_user):
                 'UserID','Password', Objects:{{'Object location information'}}}
                 """
                 main_data.update({'object': object_lst})
-                all_info.append(main_data)   
+                all_info.append(main_data) 
     return all_info
 
 

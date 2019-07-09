@@ -51,10 +51,28 @@ def create_dashboard(all_info):
             panel['targets'][0]['resourceId'] = interface
             panel['targets'][1]['nodeId'] = nodeid
             panel['targets'][1]['resourceId'] = interface
+
+            hc_octets = objects['parameter']['hc_octets']
+            if hc_octets == 'true':
+                panel['targets'][0]['attribute'] = 'ifHCInOctets'
+                panel['targets'][0]['label'] = 'ifHCInOctets'
+                panel['targets'][1]['attribute'] = 'ifHCOutOctets'
+                panel['targets'][1]['label'] = 'ifHCOutOctets'
+                panel['targets'][2]['expression'] = 'ifHCInOctets*8/(1024*1024)'
+                panel['targets'][3]['expression'] = 'ifHCOutOctets*8/(1024*1024)'
+            else:
+                panel['targets'][0]['attribute'] = 'ifInOctets'
+                panel['targets'][0]['label'] = 'ifInOctets'
+                panel['targets'][1]['attribute'] = 'ifOutOctets'
+                panel['targets'][1]['label'] = 'ifOutOctets'
+                panel['targets'][2]['expression'] = 'ifInOctets*8/(1024*1024)'
+                panel['targets'][3]['expression'] = 'ifOutOctets*8/(1024*1024)'
+
             panel['title'] = location
             paneldata.append(panel)
             panel_id += 1
             grid_pos_y += 9
+
         if g_protocol == 'https':
             port = 443
         elif g_protocol == 'http':
