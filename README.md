@@ -185,5 +185,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 Showcase of the first version from 2018 on YouTube
 https://www.youtube.com/watch?v=idrySEOhs2U
 
-The Youtube presentation in *.pdf format can be founde here
+The Youtube presentation in *.pdf format can be found here
 https://ouce.opennms.eu/img/ouce2018-Patrick_Kremser-Automatically_Generated_Dashboards.pdf
