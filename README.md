@@ -182,8 +182,8 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 5. Multi dashboards (for each category)
 
 ## Presentation
-Showcase of the first version from 2018 on YouTube
+Showcase of the first version from 2018 on YouTube  
 https://www.youtube.com/watch?v=idrySEOhs2U
 
-The Youtube presentation in *.pdf format can be found here
+The Youtube presentation in *.pdf format can be found here  
 https://ouce.opennms.eu/img/ouce2018-Patrick_Kremser-Automatically_Generated_Dashboards.pdf
