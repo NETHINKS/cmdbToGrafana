@@ -2,18 +2,21 @@
 Grafana-Script information_converter module
 This is the information_converter module of Grafana-Script
 :license: MIT, see LICENSE for more details
-:copyright: (c) 2018 by NETHINKS GmbH, see AUTHORS for more details
+:copyright: (c) 2020 by NETHINKS GmbH, see AUTHORS for more details
 """
 
 import os
 import json
 import xml.etree.ElementTree as ET
 from grafana_script.cmdb import CmdbDatacollection
+from grafana_script.datagerry import DATAGERRY_Datacollection
 from grafana_script.opennms_functions import OpennmsFunctions
 from grafana_script.config import ScriptConfig
+from grafana_script.opennms_event import send_event
 
 CONF = ScriptConfig()
 CMDB = CmdbDatacollection()
+DG   = DATAGERRY_Datacollection()
 ONMS = OpennmsFunctions()
 
 
@@ -21,10 +24,9 @@ def cmdb_to_dict(objects_by_user):
     """
     Summs up all necessary information in one dictionary
     """
-
     object_name = CONF.get_value('CMDB', 'object_name')
-    foreign_to_id = ONMS.associate_to_id()
     asset_to_user = CMDB.asset_id_to_user_id()
+    foreign_to_id = ONMS.associate_to_id()
 
     all_info = []
     for user_id in asset_to_user:
@@ -42,37 +44,126 @@ def cmdb_to_dict(objects_by_user):
 
             for object_id in objects_by_user[user_id]:
                
-                # Add Description of Object Location to dictionary
-                location = CMDB.get_location(object_id)
+                if foreign_to_id.get("%s"%object_id) != None:
+                    # Add Description of Object Location to dictionary
+                    location = CMDB.get_location(object_id)
 
-                # Add WAN-Interface to disctionary
-                interface = CMDB.get_interfaces(object_id)
+                    # Add WAN-Interface to disctionary
+                    interface = CMDB.get_interfaces(object_id)
 
-                nodeid = "%s%s" % (object_name, object_id)
-                interface = ONMS.corrected_interface(foreign_to_id, object_id, interface)
-                
-                hc_check = ONMS.hc_octets_check(foreign_to_id, object_id, interface)
+                    nodeid = "%s%s" % (object_name, object_id)
+                    interface = ONMS.corrected_interface(foreign_to_id, object_id, interface)
+                    
+                    hc_check = ONMS.hc_octets_check(foreign_to_id, object_id, interface)
 
-                object_data = {
-                    "parameter": {
-                        "location": "%s" % location,
-                        "nodeid": "%s" % nodeid,
-                        "interface": "%s" % interface,
-                        "hc_octets": "%s" % hc_check
+                    object_data = {
+                        "parameter": {
+                            "location": "%s" % location,
+                            "nodeid": "%s" % nodeid,
+                            "interface": "%s" % interface,
+                            "hc_octets": "%s" % hc_check
+                        }
                     }
-                }
 
-                # Only add object with Interfaces
-                if interface is not None:
-                    object_lst.append(object_data)
+                    # Only add object with Interfaces
+                    if interface is not None:
+                        object_lst.append(object_data)
 
-                """
-                Creates the final Dicionary in the format of 
-                {'UserID','Password', Objects:{{'Object location information'}}, 
-                'UserID','Password', Objects:{{'Object location information'}}}
-                """
-                main_data.update({'object': object_lst})
-                all_info.append(main_data) 
+                    """
+                    Creates the final Dicionary in the format of 
+                    {'UserID','Password', Objects:{{'Object location information'}}, 
+                    'UserID','Password', Objects:{{'Object location information'}}}
+                    """
+                    main_data.update({'object': object_lst})
+                    all_info.append(main_data)  
+                else:
+                    pass                
+    return all_info
+
+def dg_to_dict(objects_by_user):
+    """
+    Summs up all necessary information in one dictionary
+    """
+    object_name = CONF.get_value('DATAGERRY', 'object_name')
+    foreign_to_id = ONMS.associate_to_id()
+
+    all_info = []
+    interface_errors = []
+    user_set_wrong_errors = []
+    user_id_error = []
+    no_password = []
+
+    dg_objects = DG.get_object_data()
+    dg_users = DG.get_user_data()
+
+    for user_id in objects_by_user:
+        if not any(d['variables']['User_ID'] == user_id for d in dg_users):
+            user_set_wrong_errors.append(user_id)
+
+        password = DG.get_password(user_id, dg_users)
+
+        if password == None or password == '':
+            no_password.append('%s'%(user_id))
+
+        object_lst = []
+        if password:
+            # Create a new dictionary-template for further use
+            main_data = {
+                "id": "%s" % user_id,
+                "password": "%s" % password,
+                "object": ""
+            }
+
+            for object_id in objects_by_user[user_id]:
+                if len(user_id) != 5 and user_id.isdigit() is False:
+                    user_id_error.append(object_id)
+                if foreign_to_id.get("%s"%object_id) != None:
+                    # Add Description of Object Location to dictionary
+                    location = DG.get_location(object_id, dg_objects)
+    
+                    # Add WAN-Interface to disctionary
+                    dg_interface = DG.get_interfaces(object_id, dg_objects)
+
+                    nodeid = "%s%s" % (object_name, object_id)
+                    interface = ONMS.corrected_interface(foreign_to_id, object_id, dg_interface)
+
+                    hc_check = ONMS.hc_octets_check(foreign_to_id, object_id, interface)
+                  
+                    object_data = {
+                        "parameter": {
+                            "location": "%s" % location,
+                            "nodeid": "%s" % nodeid,
+                            "interface": "%s" % interface,
+                            "hc_octets": "%s" % hc_check
+                        }
+                    }
+
+                    # Only add object with OpenNMS-Interfaces
+                    if interface == None or interface == '':
+                        interface_errors.append('%s: %s'%(object_id, dg_interface))
+                    else: 
+                        object_lst.append(object_data)
+
+                    """
+                    Creates the final Dicionary in the format of 
+                    {'UserID','Password', Objects:{{'Object location information'}}, 
+                    'UserID','Password', Objects:{{'Object location information'}}}
+                    """
+                    main_data.update({'object': object_lst})
+                    all_info.append(main_data)  
+                else:
+                    pass    
+
+    """
+    Create an OpenNMS event if there is one or more of the following problems:
+    - No interface in DATAGERRY configured
+    - No fitting interface in OpenNMS found
+    - No user password set
+    - User in wrong DATAGERRY type
+    - User ID in DATAGERRY object wrong
+    """               
+    if interface_errors or user_set_wrong_errors or user_id_error:
+        send_event(user_set_wrong_errors, no_password, user_id_error, interface_errors)         
     return all_info
 
 
@@ -101,7 +192,6 @@ def json_to_dict(filename):
     {'location': 'Network-Connection: STREET 3, 12345 CITY  || IP: 127.0.0.1',
      'nodeid': 'yourcmdb-kdrouter:869', 'interface': 'interfaceSnmp[Et0-7cad7461ea3e]'}}]}]
     """
-
     foreign_to_id = ONMS.associate_to_id()
     filepath = os.path.abspath('')
     filepath += '/grafana_script/datasource/%s' % filename
@@ -140,7 +230,6 @@ def xml_to_dict(filename):
     {'location': 'Network-Connection: STREET 3, 12345 CITY  || IP: 127.0.0.1',
      'nodeid': 'yourcmdb-kdrouter:869', 'interface': 'interfaceSnmp[Et0-7cad7461ea3e]'}}]}]
     """
-
     filepath = os.path.abspath('')
     filepath += '/grafana_script/datasource/%s' % filename
     parsed_xml = ET.parse(filepath)

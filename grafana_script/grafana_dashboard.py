@@ -2,7 +2,7 @@
 Grafana-Script grafana_dashboard module
 This is the grafana_dashboard module of Grafana-Script
 :license: MIT, see LICENSE for more details
-:copyright: (c) 2018 by NETHINKS GmbH, see AUTHORS for more details
+:copyright: (c) 2020 by NETHINKS GmbH, see AUTHORS for more details
 """
 
 import os
@@ -16,7 +16,6 @@ def create_dashboard(all_info):
     """
     Creates Dashboards with Panels
     """
-
     g_protocol = CONF.get_value('Grafana', 'protocol')
     g_user = CONF.get_value('Grafana', 'user')
     g_password = CONF.get_value('Grafana', 'password')
@@ -80,9 +79,13 @@ def create_dashboard(all_info):
         else:
             port = 3000
 
-        grafana_access = "%s://%s:%s@%s:%s/api/dashboards/db" % (g_protocol, g_user, g_password, g_url, port)
-        headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
+        if port == 3000:
+            grafana_access = "http://%s:%s@%s:3000/api/dashboards/db" % (g_user, g_password, g_url)
+        else:
+            grafana_access = "%s://%s:%s@%s:%s/api/dashboards/db" % (g_protocol, g_user, g_password, g_url, port)
 
+        headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
         dashboard['dashboard']['panels'] = paneldata
         dashboard['dashboard']['title'] = "Network Workload - %s" % user_id
         requests.post(grafana_access, data=json.dumps(dashboard), headers=headers, verify=False)
+        

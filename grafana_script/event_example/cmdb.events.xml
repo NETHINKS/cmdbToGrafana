@@ -1,0 +1,19 @@
+<events>
+   <event>
+      <uei>uei.opennms.org/cmdb/errors</uei>
+      <event-label>CMDB event: errors</event-label>
+      <descr>
+      	&lt;p>The following DATAGERRY users are configured as a wrong type in DATAGERRY: %parm[Users]%&lt;/p>
+        (There are devices configured for Grafana dashboards/panels, but there's no configured User)
+        &lt;p>The following DATAGERRY users have no passwords configured: %parm[Passwords]%&lt;/p>
+      	&lt;p>The following DATAGERRY objects have wrong configured User IDs in DATAGERRY: %parm[Objects]%&lt;/p>
+      	(The User ID is not a number and/or the number is not five digits in length)
+      	&lt;p>The following DATAGERRY objects have interfaces configured that don't exist in OpenNMS: %parm[Interfaces]%&lt;/p>
+         (Either the interface doesn't exist in OpenNMS or there's no configured interface in DATAGERRY)
+      </descr>
+      <logmsg dest="logndisplay">Wrong configurations have been found in the CMDB during the execution of the Grafana-Script.
+      </logmsg>
+      <severity>Warning</severity>
+      <alarm-data reduction-key="%uei%" alarm-type="3"/>
+   </event>
+</events>

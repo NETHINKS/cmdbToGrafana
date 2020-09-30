@@ -2,7 +2,7 @@
 Grafana-Script cmdb module
 This is the cmdb module of Grafana-Script
 :license: MIT, see LICENSE for more details
-:copyright: (c) 2018 by NETHINKS GmbH, see AUTHORS for more details
+:copyright: (c) 2020 by NETHINKS GmbH, see AUTHORS for more details
 """
 
 import json
@@ -17,12 +17,10 @@ class CmdbDatacollection:
     """
     Functions for cmdb datasource to get all necessary information
     """
-
     def __init__(self):
         """
         Get CMDB username, password and url for requests
         """
-
         self.c_user = CONF.get_value('CMDB', 'user')
         self.c_password = CONF.get_value('CMDB', 'password')
         self.c_address = CONF.get_value('CMDB', 'base_url')
@@ -33,7 +31,6 @@ class CmdbDatacollection:
         Creates a dictionary in the format {user_id:asset_id}
         that is needed in cmdbToDict
         """
-
         objects_url = self.c_address + CONF.get_value('CMDB', 'login_url_part')
         access_object = '%s://%s:%s@%s' % (self.c_protocol, self.c_user, self.c_password, objects_url)
 
@@ -54,7 +51,6 @@ class CmdbDatacollection:
         Creates an Dictionary in the following format:
         {'UserID':['ObjectID','ObjectID'], 'UserID':['ObjectID','ObjectID']}
         """
-
         objects_by_user = {}
         entrylist = {}
 
@@ -102,18 +98,10 @@ class CmdbDatacollection:
         event_data = []
         for object_id in entrylist:
             if len(entrylist[object_id]) != 5 and entrylist[object_id].isdigit() is False:
-                event_data.append(object_id)
-            else:
                 if entrylist[object_id] in objects_by_user:
                     objects_by_user[entrylist[object_id]].append(object_id)
                 else:
                     objects_by_user.update({entrylist[object_id]: [object_id]})
-
-        """
-        If there are IDs in the evenData list send an OpenNMS Event to inform
-        """
-        if event_data:
-            send_event(event_data)
         return objects_by_user
         
 
@@ -121,7 +109,6 @@ class CmdbDatacollection:
         """
         Get the WAN-Interface from your cmdb
         """
-
         cmdb_url = '%s/rest.php/objects/%s' % (self.c_address, object_id)
         cmdb_access = '%s://%s:%s@%s' % (self.c_protocol, self.c_user, self.c_password, cmdb_url)
         cmdb_data = requests.get(cmdb_access)
@@ -146,7 +133,6 @@ class CmdbDatacollection:
         {'location': 'Network-Connection: street number postcode city
         || IP:127.0.0.1', 'nodeid': 'Requisition:ForeignID'}
         """
-
         cmdb_url = '%s/rest.php/objects/%s' % (self.c_address, object_id)
         cmdb_access = '%s://%s:%s@%s' % (self.c_protocol, self.c_user, self.c_password, cmdb_url)
         cmdb_data = requests.get(cmdb_access)

@@ -2,7 +2,7 @@
 Grafana-Script config module
 This is the config module of Grafana-Script
 :license: MIT, see LICENSE for more details
-:copyright: (c) 2018 by NETHINKS GmbH, see AUTHORS for more details
+:copyright: (c) 2020 by NETHINKS GmbH, see AUTHORS for more details
 """
 
 import os

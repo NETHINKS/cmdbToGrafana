@@ -2,12 +2,11 @@
 Grafana-Script functions module
 This is the functions module of Grafana-Script
 :license: MIT, see LICENSE for more details
-:copyright: (c) 2018 by NETHINKS GmbH, see AUTHORS for more details
+:copyright: (c) 2020 by NETHINKS GmbH, see AUTHORS for more details
 """
 
 import xml.etree.ElementTree as ET
 import requests
-import json
 from grafana_script.config import ScriptConfig
 
 CONF = ScriptConfig()
@@ -17,7 +16,6 @@ class OpennmsFunctions:
     """
     Functions for OpenNMS to get all necessary information
     """
-
     def __init__(self):
         """
         Get OpenNMS username, password and url for requests
@@ -33,7 +31,6 @@ class OpennmsFunctions:
         This is needed for the interface correction since we dont got
         the node id but its needed in the rest call in OpenNMS
         """
-
         opennms_address = self.o_url + '/opennms/rest/nodes?limit=0'
         opennms_access = '%s://%s:%s@%s' % (self.o_protocol, self.o_user, self.o_password, opennms_address)
         requestdata = requests.get(opennms_access, verify=False).text
@@ -52,10 +49,10 @@ class OpennmsFunctions:
         interface needed in Grafana :
         Gi0/0/0 => interfaceSnmp[Gi0_0_0-70f35a7135d1]
         """
-
-        opennms_node_id = foreign_to_id[object_id]
+        opennms_node_id = foreign_to_id[str(object_id)]
 
         resourceid = ''
+
         opennms_address = self.o_url + '/opennms/rest/nodes/%s/snmpinterfaces?limit=0' % opennms_node_id
         access = '%s://%s:%s@%s' % (self.o_protocol, self.o_user, self.o_password, opennms_address)
         nodes = requests.get(access, verify=False).text
@@ -74,7 +71,10 @@ class OpennmsFunctions:
         return resourceid
 
     def hc_octets_check(self, foreign_to_id, object_id, interface):
-        opennms_node_id = foreign_to_id[object_id]
+        """
+        Check if the resouce has ifHcInOctets or only provides ifInOctets
+        """
+        opennms_node_id = foreign_to_id[str(object_id)]
         opennms_address = self.o_url + '/opennms/rest/measurements/node[%s].%s/ifHCInOctets?&aggregation=AVERAGE'%(opennms_node_id, interface)
         access = '%s://%s:%s@%s' % (self.o_protocol, self.o_user, self.o_password, opennms_address)
         response = requests.get(access)

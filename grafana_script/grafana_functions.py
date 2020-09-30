@@ -2,7 +2,7 @@
 Grafana-Script grafana_functions module
 This is the grafana_functions module of Grafana-Script
 :license: MIT, see LICENSE for more details
-:copyright: (c) 2018 by NETHINKS GmbH, see AUTHORS for more details
+:copyright: (c) 2020 by NETHINKS GmbH, see AUTHORS for more details
 """
 
 import json
@@ -16,7 +16,6 @@ class GrafanaFunctions:
     """
     Functions for Grafana to create users and dashboards
     """
-
     def __init__(self):
         """
         Get Grafana username, password and url for requests
@@ -30,13 +29,13 @@ class GrafanaFunctions:
         elif self.g_protocol == 'http':
             self.port = 80
         else:
+            self.g_protocol = 'http'
             self.port = 3000
 
     def create_users(self, all_info):
         """
         Creates all users found in the datasource with their configured password
         """
-
         for user_id in all_info:
             password = user_id['password']
             grafana_link = "%s://%s:%s@%s:%s/api/admin/users"
@@ -78,7 +77,6 @@ class GrafanaFunctions:
         The title is needed cause it includes the user id which is the name from
         getUsers
         """
-
         grafana_link = "%s://%s:%s@%s:%s/api/search?tag=user_dashboard"
         grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url, self.port)
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
@@ -93,7 +91,6 @@ class GrafanaFunctions:
         """
         Changes the dashboarpermissons from all to user specified
         """
-
         for dashboard_id, dashboard_title in dashboards.items():
             for grafana_id, user_id in users.items():
                 if user_id in dashboard_title:
@@ -137,7 +134,6 @@ class GrafanaFunctions:
         and new ones get created
         Get all dashboard uid's and then delete the dashboards
         """
-
         grafana_link = "%s://%s:%s@%s:%s/api/search?tag=user_dashboard"
         grafana_access = grafana_link % (self.g_protocol, self.g_user, self.g_password, self.g_url, self.port)
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
