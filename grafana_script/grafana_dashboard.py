@@ -87,5 +87,6 @@ def create_dashboard(all_info):
         headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
         dashboard['dashboard']['panels'] = paneldata
         dashboard['dashboard']['title'] = "Network Workload - %s" % user_id
+        dashboard['dashboard']['uid'] = str(user_id)
         requests.post(grafana_access, data=json.dumps(dashboard), headers=headers, verify=False)
         

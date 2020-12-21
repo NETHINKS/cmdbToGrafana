@@ -70,6 +70,31 @@ class OpennmsFunctions:
                         resourceid = 'interfaceSnmp' + '[' + '%s' % interface + ']'
         return resourceid
 
+    def corrected_interface_from_resources(self, foreign_to_id, object_id, interface):
+        """
+        In the datasource you only write something like Fa0, Gi0, etc...
+        for your Interface. This functions takes it and checks for the right
+        interface needed in Grafana :
+        Gi0/0/0 => interfaceSnmp[Gi0_0_0-70f35a7135d1]
+        """
+        opennms_node_id = foreign_to_id[str(object_id)]
+
+        resourceid = ''
+
+        opennms_address = self.o_url + '/opennms/rest/resources/fornode/%s' % opennms_node_id
+        access = '%s://%s:%s@%s' % (self.o_protocol, self.o_user, self.o_password, opennms_address)
+        resources = requests.get(access, verify=False).text
+        resources_xml = ET.fromstring(resources.encode('utf-8'))
+
+        for children in resources_xml: 
+            if children.attrib: 
+                for resource in children:
+                    if 'SNMP Interface Data' in resource.attrib.values():
+                        interface_corr = interface.replace('/', '_').replace('.', '_') + '-'
+                        if resource.attrib['name'].startswith(interface_corr) or resource.attrib['name'] == interface:
+                            resourceid = 'interfaceSnmp' + '[' + '%s' % resource.attrib['name'] + ']'
+        return resourceid
+
     def hc_octets_check(self, foreign_to_id, object_id, interface):
         """
         Check if the resouce has ifHcInOctets or only provides ifInOctets

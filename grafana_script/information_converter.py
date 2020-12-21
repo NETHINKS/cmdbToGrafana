@@ -118,6 +118,7 @@ def dg_to_dict(objects_by_user):
                 if len(user_id) != 5 and user_id.isdigit() is False:
                     user_id_error.append(object_id)
                 if foreign_to_id.get("%s"%object_id) != None:
+                    
                     # Add Description of Object Location to dictionary
                     location = DG.get_location(object_id, dg_objects)
     
@@ -125,7 +126,9 @@ def dg_to_dict(objects_by_user):
                     dg_interface = DG.get_interfaces(object_id, dg_objects)
 
                     nodeid = "%s%s" % (object_name, object_id)
-                    interface = ONMS.corrected_interface(foreign_to_id, object_id, dg_interface)
+                    #interface = ONMS.corrected_interface(foreign_to_id, object_id, dg_interface)
+
+                    interface = ONMS.corrected_interface_from_resources(foreign_to_id, object_id, dg_interface)
 
                     hc_check = ONMS.hc_octets_check(foreign_to_id, object_id, interface)
                   
@@ -137,7 +140,6 @@ def dg_to_dict(objects_by_user):
                             "hc_octets": "%s" % hc_check
                         }
                     }
-
                     # Only add object with OpenNMS-Interfaces
                     if interface == None or interface == '':
                         interface_errors.append('%s: %s'%(object_id, dg_interface))
